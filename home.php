@@ -1,7 +1,7 @@
 <?php 
-	require_once('RedditAPI.php');
-	$API = new RedditAPI;
-	$str = $API->HelloWorld();
+	require_once('PostGrabber.php');
+	$grabber = new PostGrabber();
+	$str=$grabber->getPosts();	
  ?>
 <!DOCTYPE html>
 <html>

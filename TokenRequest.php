@@ -6,11 +6,11 @@ if (isset($_GET["error"]))
     die;
 }
 
-$authorizeUrl = 'https://ssl.reddit.com/api/v1/authorize';
+
 $accessTokenUrl = 'https://ssl.reddit.com/api/v1/access_token';
 $clientId = 'bC5wDWg_-w4v7g';
 $clientSecret = 'KQIAWonVBlYU_O-5zF4YaeqCg_I';
-$userAgent = 'post2kindle/0.1 by reddit2kindle';
+
 
 $redirectUrl = "http://localhost/r2kWeb/oath.php";
 
