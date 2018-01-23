@@ -37,7 +37,7 @@ class PostGrabber
 
 		$client = $this->setToken();
 
-		$reqparams = array("limit"=>"1");
+		$reqparams = array("limit"=>$limit);
 
 		$response = $client->fetch($fetchaddress,$reqparams);
 
