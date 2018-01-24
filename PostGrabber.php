@@ -33,7 +33,7 @@ class PostGrabber
 
 	function getPosts($subreddit = '/r/nosleep', $sort = 'hot',$limit = '25'){
 		
-		$fetchaddress = 'https://oauth.reddit.com'.'/'.$sort;
+		$fetchaddress = 'https://oauth.reddit.com'.$subreddit.'/'.$sort;
 
 		$client = $this->setToken();
 
@@ -41,7 +41,8 @@ class PostGrabber
 
 		$response = $client->fetch($fetchaddress,$reqparams);
 
-		echo('<strong>Response for fetch me.json:</strong><pre>');
+		
+		echo("fetchaddress: ".$fetchaddress);
 		print_r($response);
 		echo('</pre>');
 	}
