@@ -7,22 +7,26 @@ require("PHP-OAuth2/src/OAuth2/GrantType/IGrantType.php");
 require("PHP-OAuth2/src/OAuth2/GrantType/ClientCredentials.php");
 class PostGrabber
 {
+	private $clientID;
+	private $clientSecret;
 	
-	function __construct()
+	function __construct($clientID,$clientSecret)
 	{
-
+		$this->clientID=$clientID;
+		$this->clientSecret=$clientSecret;
 	}
 
 
 	function setToken(){
 
 		$accessTokenUrl = 'https://ssl.reddit.com/api/v1/access_token';
-		$clientId = 'bC5wDWg_-w4v7g';
-		$clientSecret = 'KQIAWonVBlYU_O-5zF4YaeqCg_I';
+		$clientID = $this->clientID;
+		$clientSecret = $this->clientSecret;
 
-		$client = new OAuth2\Client($clientId,$clientSecret,OAuth2\Client::AUTH_TYPE_AUTHORIZATION_BASIC);
+		$client = new OAuth2\Client($clientID,$clientSecret,OAuth2\Client::AUTH_TYPE_AUTHORIZATION_BASIC);
 		$client->setCurlOption(CURLOPT_USERAGENT,"post2kindle by /u/reddit2kindle");
-		$params = array("user-pass"=>"bC5wDWg_-w4v7g:KQIAWonVBlYU_O-5zF4YaeqCg_I");
+		$userpass = $this->clientID.":".$this->clientSecret;
+		$params = array("user-pass"=>$userpass);
 		$response = $client->getAccessToken($accessTokenUrl, "client_credentials",$params);
 		$accessTokenResult = $response["result"];
 		$client->setAccessToken($accessTokenResult["access_token"]);
@@ -40,10 +44,33 @@ class PostGrabber
 		$reqparams = array("limit"=>$limit);
 
 		$response = $client->fetch($fetchaddress,$reqparams);
+		$posts = $response["result"]["data"]["children"];
+		unset($response);
+		unset($client);
+		$cleanedposts = array();
+		foreach ($posts as $value){
+			$temparray = $value["data"];
+			if (!$temparray["stickied"]){
+				$post = array("title"=>$temparray["title"],"body"=>$temparray["selftext_html"],"author"=>$temparray["author"]
+					);
+				array_push($cleanedposts, $post);
+			}
+		}
+		$title = $subreddit." ".$sort." ".$limit." ".date("l, F j, Y");
+		return new PostCollection($title,$cleanedposts);
+	}
+}
 
-		
-		echo("fetchaddress: ".$fetchaddress);
-		print_r($response);
-		echo('</pre>');
+/**
+* 
+*/
+class PostCollection
+{	
+	public $title;
+	public $posts;
+	function __construct($title,$posts)
+	{
+		$this->title = $title;
+		$this->posts = $posts;
 	}
 }

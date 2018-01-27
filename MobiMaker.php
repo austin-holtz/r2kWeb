@@ -4,12 +4,12 @@
 */
 class MobiMaker
 {
-	private $posts;
+	private $collection;
 	private $directory;
 	
-	function __construct($posts)
+	function __construct($collection)
 	{
-		$this->posts=$posts;
+		$this->collection=$collection;
 		$regpattern = array("/January/",
 							"/February/",
 							"/March/",
@@ -50,50 +50,170 @@ class MobiMaker
 							"--",
 							"--"
 						);
-		$dirtitle = preg_replace($regpattern,$regreplace, $this->posts->title);
+		$dirtitle = preg_replace($regpattern,$regreplace, $this->collection->title);
+		$dirtitle = substr_replace($dirtitle, "-", -4,0);
 		$this->directory="./$dirtitle";
 		// echo $dirtitle."\n";
 	}
 
 	function createbookdir(){
 		mkdir($this->directory);
+		mkdir("$this->directory/META-INF");
+		mkdir("$this->directory/OEBPS");
+		mkdir("$this->directory/OEBPS/Images");
+		mkdir("$this->directory/OEBPS/Styles");
+		mkdir("$this->directory/OEBPS/Text");
+		copy("EpubTemplate/META-INF/container.xml","$this->directory/META-INF/container.xml");
+		copy("EpubTemplate/OEBPS/Styles/stylesheet.css","$this->directory/OEBPS/Styles/stylesheet.css");
+		copy("EpubTemplate/OEBPS/Text/backcover.xhtml", "$this->directory/OEBPS/Text/backcover.xhtml");
+		copy("EpubTemplate/OEBPS/Text/bookcover.xhtml", "$this->directory/OEBPS/Text/bookcover.xhtml");
+		copy("EpubTemplate/OEBPS/Images/backcover.jpg","$this->directory/OEBPS/Images/backcover.jpg");
+		copy("EpubTemplate/OEBPS/Images/cover.jpg","$this->directory/OEBPS/Images/cover.jpeg");
+		copy("EpubTemplate/mimetype","$this->directory/mimetype");
+
+
+
 	}
 
-	function createtextfiles(){
-		$posts = $this->posts;
+	function gen_text_files(){
+		$collection = $this->collection;
 		$templatefh = fopen("EpubTemplate/OEBPS/Text/posttemplate.xhtml", "r");
 		$template = fread($templatefh, filesize("EpubTemplate/OEBPS/Text/posttemplate.xhtml"));
 		fclose($templatefh);
-		foreach ($this->posts->posts as $key => $value) {
+		foreach ($this->collection->posts as $key => $value) {
 			
 			$posttitle = $value["title"];
 			$postauthor = $value["author"];
 			$postbody = $value["body"];
-			$regpattern = array("/posttitle/",
-								"/postauthor/",
-								"/postbody/",
+			$strpattern = array("posttitle",
+								"postauthor",
+								"postbody",
 							);
-			$regreplace = array ($posttitle,
+			$strreplace = array ($posttitle,
 								 $postauthor,
 								 $postbody
-								);
-			$output = preg_replace($regpattern, $regreplace, $template);
-			$outfilepath = "$this->directory/$posttitle--$postauthor";
+							);
+			$output = str_replace($strpattern, $strreplace, $template);
+			$outfilepath = "$this->directory/OEBPS/Text/$posttitle--$postauthor.xhtml";
 			$outfh = fopen($outfilepath, "w");
 			fwrite($outfh, $output);
 			fclose($outfh);
 		}
 	}
 
-	function createtitlefile(){
+	function gen_title_file(){
 		$templatefh=fopen("EpubTemplate/OEBPS/Text/title.xhtml","r");
 		$filetext=fread($templatefh, filesize("EpubTemplate/OEBPS/Text/title.xhtml"));
 		fclose($templatefh);
-		$filetext = preg_replace("/collectiontitle/", $this->posts->title, $filetext);
-		$outputfile = $this->directory."/title.xhtml";
+		$filetext = str_replace("collectiontitle", $this->collection->title, $filetext);
+		$outputfile = $this->directory."/OEBPS/Text/title.xhtml";
 		$outputfh = fopen($outputfile, "w");
 		fwrite($outputfh, $filetext);
 		fclose($outputfh);
+	}
+
+	function gen_table_contents(){
+		
+		$posts = $this->collection->posts;
+
+		$postHtmlTemplate = '<a href="../Text/postlink.xhtml">posttitleauthor</a><br/>';
+		$postOpfTemplate = ' <item id="posttitleauthor" href="Text/postlink.xhtml" media-type="application/xhtml+xml" />';
+
+		$opfSpineTemplate = '<itemref idref="posttitleauthor" />';
+
+		$postNcxTemplate = '
+		<navPoint class="chapter" id="postlink" playOrder="6">
+			<navLabel>
+				<text>posttitleauthor</text>
+			</navLabel>
+			<content src="Text/postlink.xhtml"/>
+		</navPoint>';
+
+		$htmllinks = "";
+		$opflinks = "";
+		$opfspine = "";
+		$ncxlinks = "";
+
+		$searches = array("postlink","posttitleauthor");
+		foreach ($posts as $value){
+			$posttitle = $value["title"];
+			$postauthor = $value["author"];
+			$replace = array("$posttitle--$postauthor","$posttitle by $postauthor");
+
+			$posthtml = str_replace($searches, $replace, $postHtmlTemplate);
+			$htmllinks.="$posthtml\n\n";
+
+			$postopf = str_replace($searches, $replace, $postOpfTemplate);
+			$postopfspine = str_replace($searches, $replace, $opfSpineTemplate);
+			$opflinks.="\t\t$postopf\n";
+			$opfspine .= "\t\t$postopfspine\n";
+
+			$postncx = str_replace($searches, $replace, $postNcxTemplate);
+			$ncxlinks.="\t\t$postncx\n\n";
+		}
+
+
+		/*
+		*	HTML TOC
+		*/
+
+		$tocFileTemplate = fopen("EpubTemplate/OEBPS/Text/toc.xhtml","r");
+		$tocTemplateText = fread($tocFileTemplate, filesize("EpubTemplate/OEBPS/Text/toc.xhtml"));
+		fclose($tocFileTemplate);
+
+		$output = str_replace("postlinks", $htmllinks, $tocTemplateText);
+
+		$outputfile = $this->directory."/OEBPS/Text/toc.xhtml";
+		$outputfh = fopen($outputfile, "w");
+		fwrite($outputfh, $output);
+		fclose($outputfh);
+
+
+
+
+		// opf file
+
+		$opfFileTemplate = fopen("EpubTemplate/OEBPS/content.opf","r");
+		$opfTemplateText = fread($opfFileTemplate, filesize("EpubTemplate/OEBPS/content.opf"));
+		fclose($opfFileTemplate);
+
+		$searches = array("postlinks","postspine");
+		$replace = array($opflinks,$opfspine);
+
+		$output = str_replace($searches, $replace, $opfTemplateText);
+
+		$outputfile = $this->directory."/OEBPS/content.opf";
+		$outputfh = fopen($outputfile, "w");
+		fwrite($outputfh, $output);
+		fclose($outputfh);
+
+
+		// ncx file
+		$tocFileTemplate = fopen("EpubTemplate/OEBPS/toc.ncx","r");
+		$tocTemplateText = fread($tocFileTemplate, filesize("EpubTemplate/OEBPS/toc.ncx"));
+		fclose($tocFileTemplate);
+
+		$output = str_replace("postlinks", $ncxlinks, $tocTemplateText);
+
+		$outputfile = $this->directory."/OEBPS/toc.ncx";
+		$outputfh = fopen($outputfile, "w");
+		fwrite($outputfh, $output);
+		fclose($outputfh);
+
+
+	}
+
+	function gen_epub(){
+		$this->createbookdir();
+		$this->gen_title_file();
+		$this->gen_text_files();
+		$this->gen_table_contents();
+
+		$zip = new ZipArchive();
+		$zip->open('$this->directory.zip', ZipArchive::CREATE);
+
+		$zip->addfile("$this->directory/mimetype");
+		// $zip->addfile()
 	}
 
 }
