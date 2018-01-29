@@ -51,7 +51,10 @@ class PostGrabber
 		foreach ($posts as $value){
 			$temparray = $value["data"];
 			if (!$temparray["stickied"]){
-				$post = array("title"=>$temparray["title"],"body"=>$temparray["selftext_html"],"author"=>$temparray["author"]
+				$searches = array("&lt;","&gt;","&amp;");
+				$replace = array("<",">","&");
+				$cleanedbody = str_replace($searches, $replace, $temparray["selftext_html"]);
+				$post = array("title"=>$temparray["title"],"body"=>$cleanedbody,"author"=>$temparray["author"]
 					);
 				array_push($cleanedposts, $post);
 			}
