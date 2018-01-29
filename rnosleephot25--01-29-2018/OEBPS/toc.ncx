@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?><ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="en">
+	<head>
+		<meta content="1" name="dtb:uid"/>
+		<meta content="2" name="dtb:depth"/>
+		
+	</head>
+	<docTitle>
+		<text>collectiontitle</text>
+	</docTitle>
+	<navMap>
+	
+		<navPoint class="chapter" id="title" playOrder="1">
+			<navLabel>
+				<text>Title Page</text>
+			</navLabel>
+			<content src="Text/title.xhtml"/>
+		</navPoint>
+
+		<navPoint class="chapter" id="toc" playOrder="3">
+			<navLabel>
+				<text>Table of Contents</text>
+			</navLabel>
+			<content src="Text/toc.xhtml"/>
+		</navPoint>
+		
+		
+		
+		
+		<navPoint class="chapter" id="My Best Friend Ellen--SetItToWumbo94" playOrder="6">
+			<navLabel>
+				<text>My Best Friend Ellen by SetItToWumbo94</text>
+			</navLabel>
+			<content src="Text/My Best Friend Ellen--SetItToWumbo94.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="How an Office Crush Saved My Marriage--DexKnightley" playOrder="6">
+			<navLabel>
+				<text>How an Office Crush Saved My Marriage by DexKnightley</text>
+			</navLabel>
+			<content src="Text/How an Office Crush Saved My Marriage--DexKnightley.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="Mommy Please--skiitzofranikk" playOrder="6">
+			<navLabel>
+				<text>Mommy Please by skiitzofranikk</text>
+			</navLabel>
+			<content src="Text/Mommy Please--skiitzofranikk.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="Something weird is happening in my Airbnb.--eraab953" playOrder="6">
+			<navLabel>
+				<text>Something weird is happening in my Airbnb. by eraab953</text>
+			</navLabel>
+			<content src="Text/Something weird is happening in my Airbnb.--eraab953.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="We Found A Cellphone On A Recent Camping Trip In Michigan With A Disturbing Video On It--nevergoingcampingaga" playOrder="6">
+			<navLabel>
+				<text>We Found A Cellphone On A Recent Camping Trip In Michigan With A Disturbing Video On It by nevergoingcampingaga</text>
+			</navLabel>
+			<content src="Text/We Found A Cellphone On A Recent Camping Trip In Michigan With A Disturbing Video On It--nevergoingcampingaga.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="I changed my walking route with my dog--lordwelshi" playOrder="6">
+			<navLabel>
+				<text>I changed my walking route with my dog by lordwelshi</text>
+			</navLabel>
+			<content src="Text/I changed my walking route with my dog--lordwelshi.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="I could have died in a school shooting--MrHavoc415" playOrder="6">
+			<navLabel>
+				<text>I could have died in a school shooting by MrHavoc415</text>
+			</navLabel>
+			<content src="Text/I could have died in a school shooting--MrHavoc415.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="My Wife And I Bought A House Using Sherlock Homes Realty--thegeneralg" playOrder="6">
+			<navLabel>
+				<text>My Wife And I Bought A House Using Sherlock Homes Realty by thegeneralg</text>
+			</navLabel>
+			<content src="Text/My Wife And I Bought A House Using Sherlock Homes Realty--thegeneralg.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="FOXTROT-ALPHA-ZULU-6-7-6 - ALL PERSONNEL LEAVE THE AREA--GeoronimoTheThird" playOrder="6">
+			<navLabel>
+				<text>FOXTROT-ALPHA-ZULU-6-7-6 - ALL PERSONNEL LEAVE THE AREA by GeoronimoTheThird</text>
+			</navLabel>
+			<content src="Text/FOXTROT-ALPHA-ZULU-6-7-6 - ALL PERSONNEL LEAVE THE AREA--GeoronimoTheThird.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="Last jewelry heist went very wrong – need help--JeffreyFMiller" playOrder="6">
+			<navLabel>
+				<text>Last jewelry heist went very wrong – need help by JeffreyFMiller</text>
+			</navLabel>
+			<content src="Text/Last jewelry heist went very wrong – need help--JeffreyFMiller.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="I have always had Epilepsy. Please help!--Heavenli" playOrder="6">
+			<navLabel>
+				<text>I have always had Epilepsy. Please help! by Heavenli</text>
+			</navLabel>
+			<content src="Text/I have always had Epilepsy. Please help!--Heavenli.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="Living alone for the first time--ColdWorldGotHotter" playOrder="6">
+			<navLabel>
+				<text>Living alone for the first time by ColdWorldGotHotter</text>
+			</navLabel>
+			<content src="Text/Living alone for the first time--ColdWorldGotHotter.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="I recently bought a mansion in Vermont--ItadakiYT" playOrder="6">
+			<navLabel>
+				<text>I recently bought a mansion in Vermont by ItadakiYT</text>
+			</navLabel>
+			<content src="Text/I recently bought a mansion in Vermont--ItadakiYT.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="Have you ever experienced something that's more than deja vu?--zobaleenie" playOrder="6">
+			<navLabel>
+				<text>Have you ever experienced something that's more than deja vu? by zobaleenie</text>
+			</navLabel>
+			<content src="Text/Have you ever experienced something that's more than deja vu?--zobaleenie.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="Confession of a High School “Mean Girl”--Clarimonde" playOrder="6">
+			<navLabel>
+				<text>Confession of a High School “Mean Girl” by Clarimonde</text>
+			</navLabel>
+			<content src="Text/Confession of a High School “Mean Girl”--Clarimonde.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="The House of Demons--CynicHappy" playOrder="6">
+			<navLabel>
+				<text>The House of Demons by CynicHappy</text>
+			</navLabel>
+			<content src="Text/The House of Demons--CynicHappy.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="The Liver Eater--lhcrow89" playOrder="6">
+			<navLabel>
+				<text>The Liver Eater by lhcrow89</text>
+			</navLabel>
+			<content src="Text/The Liver Eater--lhcrow89.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="There is something wrong with my house...there has always been--artsystrangegirl" playOrder="6">
+			<navLabel>
+				<text>There is something wrong with my house...there has always been by artsystrangegirl</text>
+			</navLabel>
+			<content src="Text/There is something wrong with my house...there has always been--artsystrangegirl.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="The house I grew up in--FUZZ_buster" playOrder="6">
+			<navLabel>
+				<text>The house I grew up in by FUZZ_buster</text>
+			</navLabel>
+			<content src="Text/The house I grew up in--FUZZ_buster.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="The Ashland House--lunalikesleopards" playOrder="6">
+			<navLabel>
+				<text>The Ashland House by lunalikesleopards</text>
+			</navLabel>
+			<content src="Text/The Ashland House--lunalikesleopards.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="The Penny Cup Killer--nickrk20" playOrder="6">
+			<navLabel>
+				<text>The Penny Cup Killer by nickrk20</text>
+			</navLabel>
+			<content src="Text/The Penny Cup Killer--nickrk20.xhtml"/>
+		</navPoint>
+
+		
+		<navPoint class="chapter" id="PLEASE send help to Elkhorn, Montana--SpookyMarie" playOrder="6">
+			<navLabel>
+				<text>PLEASE send help to Elkhorn, Montana by SpookyMarie</text>
+			</navLabel>
+			<content src="Text/PLEASE send help to Elkhorn, Montana--SpookyMarie.xhtml"/>
+		</navPoint>
+
+
+		
+		
+	</navMap>
+</ncx>

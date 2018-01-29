@@ -116,7 +116,7 @@ class MobiMaker
 		
 		$posts = $this->collection->posts;
 
-		$postHtmlTemplate = '<a href="../Text/postlink.xhtml">posttitleauthor</a><br/>';
+		$postHtmlTemplate = '<a href="../Text/postlink.xhtml">posttitleauthor</a><br/><br/>';
 		$postOpfTemplate = ' <item id="posttitleauthor" href="Text/postlink.xhtml" media-type="application/xhtml+xml" />';
 
 		$opfSpineTemplate = '<itemref idref="posttitleauthor" />';
@@ -134,7 +134,7 @@ class MobiMaker
 		$opfspine = "";
 		$ncxlinks = "";
 
-		$searches = array("postlink","posttitleauthor");
+		$searches = array("postlink","posttitleauthor","collectiontitle");
 		foreach ($posts as $value){
 			$posttitle = $value["title"];
 			$postauthor = $value["author"];
@@ -161,7 +161,10 @@ class MobiMaker
 		$tocTemplateText = fread($tocFileTemplate, filesize("EpubTemplate/OEBPS/Text/toc.xhtml"));
 		fclose($tocFileTemplate);
 
-		$output = str_replace("postlinks", $htmllinks, $tocTemplateText);
+		$searches = array("collectiontitle","postlinks");
+		$replace = array($this->collection->title,$htmllinks);
+
+		$output = str_replace($searches, $replace, $tocTemplateText);
 
 		$outputfile = $this->directory."/OEBPS/Text/toc.xhtml";
 		$outputfh = fopen($outputfile, "w");
@@ -206,8 +209,10 @@ class MobiMaker
 	function gen_zip(){
 		$zip = new ZipArchive();
 		$zip->open("$this->directory.zip", ZipArchive::CREATE);
+		$zip->addfile("$this->directory/mimetype","mimetype");
 
-		
+		$zip->close();
+		$zip->open("$this->directory.zip");
 
 		$dirs = array("OEBPS",
 					  "OEBPS/Images",
@@ -218,13 +223,16 @@ class MobiMaker
 		foreach ($dirs as $value) {
 			$zip->addEmptyDir($value);
 		}
-
-		$zip->addfile("$this->directory/mimetype","/mimetype");
 		
 		$zip->addfile("$this->directory/META-INF/container.xml","META-INF/container.xml");
 		$zip->addfile("$this->directory/OEBPS/Images/cover.jpg","OEBPS/Images/cover.jpg");
 		$zip->addfile("$this->directory/OEBPS/Images/backcover.jpg","OEBPS/Images/backcover.jpg");
 		$zip->addfile("$this->directory/OEBPS/Styles/stylesheet.css","OEBPS/Styles/stylesheet.css");
+
+		$zip->addfile("$this->directory/OEBPS/Text/bookcover.xhtml","OEBPS/Text/bookcover.xhtml");
+		$zip->addfile("$this->directory/OEBPS/Text/backcover.xhtml","OEBPS/Text/backcover.xhtml");
+		$zip->addfile("$this->directory/OEBPS/Text/title.xhtml","OEBPS/Text/title.xhtml");
+		$zip->addfile("$this->directory/OEBPS/Text/toc.xhtml","OEBPS/Text/toc.xhtml");
 
 		$posts = $this->collection->posts;
 		foreach ($posts as $value) {
@@ -236,8 +244,7 @@ class MobiMaker
 		$zip->addfile("$this->directory/OEBPS/content.opf","OEBPS/content.opf");
 		$zip->addfile("$this->directory/OEBPS/toc.ncx","OEBPS/toc.ncx");
 
-
-
+		$zip->close();
 	}
 
 	function gen_epub(){
@@ -246,6 +253,7 @@ class MobiMaker
 		$this->gen_text_files();
 		$this->gen_table_contents();
 		$this->gen_zip();
+		rename("$this->directory.zip", "$this->directory.epub");
 	}
 
 }

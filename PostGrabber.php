@@ -44,13 +44,14 @@ class PostGrabber
 		$reqparams = array("limit"=>$limit);
 
 		$response = $client->fetch($fetchaddress,$reqparams);
+		// print_r($response);
 		$posts = $response["result"]["data"]["children"];
 		unset($response);
 		unset($client);
 		$cleanedposts = array();
 		foreach ($posts as $value){
 			$temparray = $value["data"];
-			if (!$temparray["stickied"]){
+			if (!$temparray["stickied"]&&strcmp($temparray["link_flair_text"],"Series")){
 				$searches = array("&lt;","&gt;","&amp;");
 				$replace = array("<",">","&");
 				$cleanedbody = str_replace($searches, $replace, $temparray["selftext_html"]);
