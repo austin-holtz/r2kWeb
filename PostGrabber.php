@@ -2,6 +2,7 @@
 /**
 * 
 */
+require("redditAPI.php");
 require("PHP-OAuth2/src/OAuth2/Client.php");
 require("PHP-OAuth2/src/OAuth2/GrantType/IGrantType.php");
 require("PHP-OAuth2/src/OAuth2/GrantType/ClientCredentials.php");
@@ -10,10 +11,9 @@ class PostGrabber
 	private $clientID;
 	private $clientSecret;
 	
-	function __construct($clientID,$clientSecret)
+	function __construct()
 	{
-		$this->clientID=$clientID;
-		$this->clientSecret=$clientSecret;
+		
 	}
 
 
@@ -35,9 +35,9 @@ class PostGrabber
 		return $client;
 	}
 
-	function getPosts($subreddit = '/r/nosleep', $sort = 'hot',$limit = '25'){
+	function getPosts($subreddit = '/r/nosleep', $endpoint = 'hot',$limit = '25'){
 		
-		$fetchaddress = 'https://oauth.reddit.com'.$subreddit.'/'.$sort;
+		$fetchaddress = 'https://oauth.reddit.com'.$subreddit.'/'.$endpoint;
 
 		$client = $this->setToken();
 
@@ -45,6 +45,8 @@ class PostGrabber
 
 		$response = $client->fetch($fetchaddress,$reqparams);
 		// print_r($response);
+		// $api = new reddAPI();
+		// $api->
 		$posts = $response["result"]["data"]["children"];
 		unset($response);
 		unset($client);

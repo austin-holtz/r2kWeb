@@ -52,7 +52,7 @@ class FileGenerator
 						);
 		$dirtitle = preg_replace($regpattern,$regreplace, $this->collection->title);
 		$dirtitle = substr_replace($dirtitle, "-", -4,0);
-		$this->directory="./$dirtitle";
+		$this->directory="$dirtitle";
 		// echo $dirtitle."\n";
 	}
 
@@ -77,6 +77,8 @@ class FileGenerator
 		$templatefh = fopen("EpubTemplate/OEBPS/Text/posttemplate.xhtml", "r");
 		$template = fread($templatefh, filesize("EpubTemplate/OEBPS/Text/posttemplate.xhtml"));
 		fclose($templatefh);
+
+		$output = array();
 		foreach ($this->collection->posts as $key => $value) {
 			
 			$posttitle = $value["title"];
@@ -90,12 +92,13 @@ class FileGenerator
 								 $postauthor,
 								 $postbody
 							);
-			$output = str_replace($strpattern, $strreplace, $template);
-			$outfilepath = "$this->directory/OEBPS/Text/$posttitle--$postauthor.xhtml";
-			$outfh = fopen($outfilepath, "w");
-			fwrite($outfh, $output);
-			fclose($outfh);
+			$outstr = str_replace($strpattern, $strreplace, $template);
+			$outfilepath = "OEBPS/Text/$posttitle--$postauthor.xhtml";
+			
+			$output[$outfilepath]=$outstr;
 		}
+
+		return $output;
 	}
 
 	function gen_title_file(){
@@ -103,10 +106,12 @@ class FileGenerator
 		$filetext=fread($templatefh, filesize("EpubTemplate/OEBPS/Text/title.xhtml"));
 		fclose($templatefh);
 		$filetext = str_replace("collectiontitle", $this->collection->title, $filetext);
-		$outputfile = $this->directory."/OEBPS/Text/title.xhtml";
-		$outputfh = fopen($outputfile, "w");
-		fwrite($outputfh, $filetext);
-		fclose($outputfh);
+		return $filetext;
+
+		// $outputfile = $this->directory."/OEBPS/Text/title.xhtml";
+		// $outputfh = fopen($outputfile, "w");
+		// fwrite($outputfh, $filetext);
+		// fclose($outputfh);
 	}
 
 	function gen_table_contents(){
@@ -119,7 +124,7 @@ class FileGenerator
 		$opfSpineTemplate = '<itemref idref="posttitleauthor" />';
 
 		$postNcxTemplate = '
-		<navPoint class="chapter" id="postlink" playOrder="6">
+		<navPoint class="chapter" id="postlink" playOrder="playordernum">
 			<navLabel>
 				<text>posttitleauthor</text>
 			</navLabel>
@@ -131,11 +136,12 @@ class FileGenerator
 		$opfspine = "";
 		$ncxlinks = "";
 
-		$searches = array("postlink","posttitleauthor","collectiontitle");
+		$searches = array("postlink","posttitleauthor","playordernum");
+		$count = 3;
 		foreach ($posts as $value){
 			$posttitle = $value["title"];
 			$postauthor = $value["author"];
-			$replace = array("$posttitle--$postauthor","$posttitle by $postauthor");
+			$replace = array("$posttitle--$postauthor","$posttitle by $postauthor","$count");
 
 			$posthtml = str_replace($searches, $replace, $postHtmlTemplate);
 			$htmllinks.="$posthtml\n\n";
@@ -147,6 +153,7 @@ class FileGenerator
 
 			$postncx = str_replace($searches, $replace, $postNcxTemplate);
 			$ncxlinks.="\t\t$postncx\n\n";
+			$count++;
 		}
 
 
@@ -161,12 +168,14 @@ class FileGenerator
 		$searches = array("collectiontitle","postlinks");
 		$replace = array($this->collection->title,$htmllinks);
 
-		$output = str_replace($searches, $replace, $tocTemplateText);
+		
+		$htmlfilename = "OEBPS/Text/toc.xhtml";
+		$htmloutput = str_replace($searches, $replace, $tocTemplateText);
 
-		$outputfile = $this->directory."/OEBPS/Text/toc.xhtml";
-		$outputfh = fopen($outputfile, "w");
-		fwrite($outputfh, $output);
-		fclose($outputfh);
+		// $outputfile = $this->directory."/OEBPS/Text/toc.xhtml";
+		// $outputfh = fopen($outputfile, "w");
+		// fwrite($outputfh, $output);
+		// fclose($outputfh);
 
 
 
@@ -180,12 +189,12 @@ class FileGenerator
 		$searches = array("postlinks","postspine","collectiontitle");
 		$replace = array($opflinks,$opfspine,$this->collection->title);
 
-		$output = str_replace($searches, $replace, $opfTemplateText);
+		$opfoutput = str_replace($searches, $replace, $opfTemplateText);
 
-		$outputfile = $this->directory."/OEBPS/content.opf";
-		$outputfh = fopen($outputfile, "w");
-		fwrite($outputfh, $output);
-		fclose($outputfh);
+		$opffilename = "OEBPS/content.opf";
+		// $outputfh = fopen($outputfile, "w");
+		// fwrite($outputfh, $output);
+		// fclose($outputfh);
 
 
 		// ncx file
@@ -193,23 +202,36 @@ class FileGenerator
 		$tocTemplateText = fread($tocFileTemplate, filesize("EpubTemplate/OEBPS/toc.ncx"));
 		fclose($tocFileTemplate);
 
-		$output = str_replace("postlinks", $ncxlinks, $tocTemplateText);
+		$ncxoutput = str_replace("postlinks", $ncxlinks, $tocTemplateText);
 
-		$outputfile = $this->directory."/OEBPS/toc.ncx";
-		$outputfh = fopen($outputfile, "w");
-		fwrite($outputfh, $output);
-		fclose($outputfh);
+		$ncxfilename = "/OEBPS/toc.ncx";
+		
+		$output = array($htmlfilename=>$htmloutput,
+					 $opffilename=>$opfoutput,
+					 $ncxfilename=>$ncxoutput
+				);
+
+		// print_r($output);
+
+		return $output;
+
+		// $outputfh = fopen($outputfile, "w");
+		// fwrite($outputfh, $output);
+		// fclose($outputfh);
 
 
 	}
 
-	function gen_zip(){
+	function gen_epub(){
+
+		$pathToEpub = "$this->directory.epub";
+
 		$zip = new ZipArchive();
-		$zip->open("$this->directory.zip", ZipArchive::CREATE);
-		$zip->addfile("$this->directory/mimetype","mimetype");
+		$zip->open($pathToEpub, ZipArchive::CREATE);
+		$zip->addfile("EpubTemplate/mimetype","mimetype");
 
 		$zip->close();
-		$zip->open("$this->directory.zip");
+		$zip->open("$this->directory.epub");
 
 		$dirs = array("OEBPS",
 					  "OEBPS/Images",
@@ -217,41 +239,42 @@ class FileGenerator
 					  "OEBPS/Text",
 					  "META-INF"
 					);
+		
+
 		foreach ($dirs as $value) {
 			$zip->addEmptyDir($value);
 		}
-		
-		$zip->addfile("$this->directory/META-INF/container.xml","META-INF/container.xml");
-		$zip->addfile("$this->directory/OEBPS/Images/cover.jpg","OEBPS/Images/cover.jpg");
-		$zip->addfile("$this->directory/OEBPS/Images/backcover.jpg","OEBPS/Images/backcover.jpg");
-		$zip->addfile("$this->directory/OEBPS/Styles/stylesheet.css","OEBPS/Styles/stylesheet.css");
 
-		$zip->addfile("$this->directory/OEBPS/Text/bookcover.xhtml","OEBPS/Text/bookcover.xhtml");
-		$zip->addfile("$this->directory/OEBPS/Text/backcover.xhtml","OEBPS/Text/backcover.xhtml");
-		$zip->addfile("$this->directory/OEBPS/Text/title.xhtml","OEBPS/Text/title.xhtml");
-		$zip->addfile("$this->directory/OEBPS/Text/toc.xhtml","OEBPS/Text/toc.xhtml");
-
-		$posts = $this->collection->posts;
-		foreach ($posts as $value) {
-			$posttitle = $value["title"];
-			$postauthor = $value["author"];
-			$zip->addfile("$this->directory/OEBPS/Text/$posttitle--$postauthor.xhtml","OEBPS/Text/$posttitle--$postauthor.xhtml");
+		//adds text posts to zip
+		$posts = $this->gen_text_files();
+		foreach ($posts as $key => $value) {
+			$zip->addFromString($key,$value);
 		}
 
-		$zip->addfile("$this->directory/OEBPS/content.opf","OEBPS/content.opf");
-		$zip->addfile("$this->directory/OEBPS/toc.ncx","OEBPS/toc.ncx");
+		//add title.xhtml file
+		$titlefiletext = $this->gen_title_file();
+		$zip->addFromString("OEBPS/Text/title.xhtml",$titlefiletext);
 
+		//add content.opf, toc.xhtml, toc.ncx
+		$tocfiles = $this->gen_table_contents();
+		foreach ($tocfiles as $key => $value) {
+			$zip->addFromString($key,$value);
+		}
+
+		//
+		
+		$zip->addfile("EpubTemplate/META-INF/container.xml","META-INF/container.xml");
+		$zip->addfile("EpubTemplate/OEBPS/Images/cover.jpg","OEBPS/Images/cover.jpg");
+		$zip->addfile("EpubTemplate/OEBPS/Text/bookcover.xhtml","OEBPS/Text/bookcover.xhtml");
+		$zip->addfile("EpubTemplate/OEBPS/Images/backcover.jpg","OEBPS/Images/backcover.jpg");
+		$zip->addfile("EpubTemplate/OEBPS/Text/backcover.xhtml","OEBPS/Text/backcover.xhtml");
 		$zip->close();
+
+		return $pathToEpub;
+
 	}
 
-	function gen_epub(){
-		$this->createbookdir();
-		$this->gen_title_file();
-		$this->gen_text_files();
-		$this->gen_table_contents();
-		$this->gen_zip();
-		rename("$this->directory.zip", "$this->directory.epub");
-	}
+	
 
 }
 

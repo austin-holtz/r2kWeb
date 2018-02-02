@@ -16,7 +16,7 @@
 			<content src="Text/title.xhtml"/>
 		</navPoint>
 
-		<navPoint class="chapter" id="toc" playOrder="3">
+		<navPoint class="chapter" id="toc" playOrder="2">
 			<navLabel>
 				<text>Table of Contents</text>
 			</navLabel>
