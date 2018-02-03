@@ -2,7 +2,7 @@
 /**
 * 
 */
-require("redditAPI.php");
+require("RedditAPI.php");
 require("PHP-OAuth2/src/OAuth2/Client.php");
 require("PHP-OAuth2/src/OAuth2/GrantType/IGrantType.php");
 require("PHP-OAuth2/src/OAuth2/GrantType/ClientCredentials.php");
@@ -39,15 +39,16 @@ class PostGrabber
 		
 		$fetchaddress = 'https://oauth.reddit.com'.$subreddit.'/'.$endpoint;
 
-		$client = $this->setToken();
+		// $client = $this->setToken();
 
-		$reqparams = array("limit"=>$limit);
+		// $reqparams = array("limit"=>$limit);
 
-		$response = $client->fetch($fetchaddress,$reqparams);
+		// $response = $client->fetch($fetchaddress,$reqparams);
+		
 		// print_r($response);
-		// $api = new reddAPI();
-		// $api->
-		$posts = $response["result"]["data"]["children"];
+		$api = new RedditAPI();
+		$response = $api->apiCall($subreddit,$endpoint,$limit);
+		$posts = $response["data"]["children"];
 		unset($response);
 		unset($client);
 		$cleanedposts = array();
@@ -62,7 +63,7 @@ class PostGrabber
 				array_push($cleanedposts, $post);
 			}
 		}
-		$title = $subreddit." ".$sort." ".$limit." ".date("l, F j, Y");
+		$title = $subreddit." ".$endpoint." ".$limit." ".date("l, F j, Y");
 		return new PostCollection($title,$cleanedposts);
 	}
 }

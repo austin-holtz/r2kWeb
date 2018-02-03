@@ -3,7 +3,7 @@
 /**
 * 
 */
-class redditAPI
+class RedditAPI
 {
 	
 	function __construct()
@@ -13,17 +13,28 @@ class redditAPI
 
 	function apiCall($subreddit,$endpoint,$limit){
 		$token = $this->getAccessToken();
-		$reqUrl = "https://oauth.reddit.com/r/$subreddit/$endpoint?limit=$limit";
-		$ch = curl_init($requrl);
+		$reqUrl = "https://oauth.reddit.com$subreddit/$endpoint";
+		echo "\n\n$reqUrl\n\n";
+		$ch = curl_init($reqUrl);
 
 		$httpheader = array("Authorization: bearer $token");
 
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $httpheader);
 
+		curl_setopt($ch, CURLOPT_HTTPGET, true);
+
+		curl_setopt($ch,CURLOPT_USERAGENT,"post2epub by /u/reddit2kindle");
+
+		// $params = array("limit"=>$limit);
+		// curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+
+
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-		$response = curl_exec($tch);
-		$response = json_decode($response);
+		$response = curl_exec($ch);
+		// print_r($response);
+		$response = json_decode($response,true);
+		print_r($response);
 		return $response;
 
 	}
@@ -54,7 +65,8 @@ class redditAPI
 
 		$response = curl_exec($tok);
 		$response = json_decode($response);
-		return $response["access_token"];
+		
+		return $response->access_token;
 	}
 }
 
