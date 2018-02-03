@@ -13,13 +13,15 @@ class PostGrabber
 		
 	}
 
-	function getPosts($subreddit = '/r/nosleep', $endpoint = 'hot',$limit = '25'){
-		
-		$fetchaddress = 'https://oauth.reddit.com'.$subreddit.'/'.$endpoint;
+	function getPosts($subreddit = 'nosleep', $endpoint = 'hot',$limit = null){
 
+		if(!strcmp($endpoint, "top")) $endpoint = "sort/$endpoint";
+		
+		
 		$api = new RedditAPI();
 		$response = $api->apiCall($subreddit,$endpoint,$limit);
 		$posts = $response["data"]["children"];
+		// print_r($posts);
 		unset($response);
 		unset($api);
 
@@ -35,8 +37,8 @@ class PostGrabber
 				array_push($cleanedposts, $post);
 			}
 		}
-		
-		$title = $subreddit." ".$endpoint." ".$limit." ".date("l, F j, Y");
+
+		$title = "/r/".$subreddit." ".$endpoint." ".$limit." ".date("l, F j, Y");
 		return new PostCollection($title,$cleanedposts);
 	}
 }

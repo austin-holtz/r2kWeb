@@ -2,6 +2,8 @@
 /**
 * Takes posts from PostGrabber.php and generates all files for necessary for the epub. Then creates epub file.
 */
+
+
 class FileGenerator
 {
 	private $collection; //collection object. $title=string title of collection $posts = array of post data
@@ -241,7 +243,7 @@ class FileGenerator
 	*/
 	function gen_epub(){
 
-		$pathToEpub = "$this->directory.epub";
+		$pathToEpub = "Generated Ebooks/$this->directory.epub";
 
 		//epub files are just zip files with a .epub file extention
 
@@ -252,7 +254,7 @@ class FileGenerator
 		$zip->addfile("EpubTemplate/mimetype","mimetype");
 
 		$zip->close();
-		$zip->open("$this->directory.epub");
+		$zip->open("$pathToEpub");
 
 		//create the directory structure
 		$dirs = array("OEBPS",

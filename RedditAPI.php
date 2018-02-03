@@ -13,8 +13,8 @@ class RedditAPI
 
 	function apiCall($subreddit,$endpoint,$limit){
 		$token = $this->getAccessToken();
-		$reqUrl = "https://oauth.reddit.com$subreddit/$endpoint";
-		echo "\n\n$reqUrl\n\n";
+		$reqUrl = "https://oauth.reddit.com/r/$subreddit/$endpoint";
+		
 		$ch = curl_init($reqUrl);
 
 		$httpheader = array("Authorization: bearer $token");
@@ -25,16 +25,22 @@ class RedditAPI
 
 		curl_setopt($ch,CURLOPT_USERAGENT,"post2epub by /u/reddit2kindle");
 
-		// $params = array("limit"=>$limit);
-		// curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+		if ($limit)
+		{
+			$params = array("limit"=>$limit);
+			$reqUrl.="/?";
+			foreach ($params as $key => $value) {
+				$reqUrl.="$key=$value";
+			}
+		}
 
 
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
+		echo "\n\nfetching posts from $reqUrl\n\n";
 		$response = curl_exec($ch);
 		// print_r($response);
 		$response = json_decode($response,true);
-		print_r($response);
+		
 		return $response;
 
 	}
