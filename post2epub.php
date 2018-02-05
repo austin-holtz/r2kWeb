@@ -10,34 +10,52 @@ echo "Welcome to post2epub!\n\n";
 mainMenu();
 
 function mainMenu(){
-	$options = array("Create a custom collection of posts",
-					 "Load a saved collection"
+	$options = array("Create a custom collection pull",
+					 "Load a saved collection pull"
 					);
 
 	$selection = getInput($options);
 
 	switch($selection){
-		case 1:
+		case 0:
 			customCollection();
 	}
 }
 
-function customCollection(){
-	$subreddit = readline("\nType the subreddit you want posts from: /r/");
+function customCollectionPull(){
 
+
+	$subreddit = readline("\nType the subreddit you want posts from: /r/");
+	$params = array();
 	$endpointPrompts = array("hot", "top", "new");
-	$selectionIndex = getInput($endpointPrompts)-1;
+	$selectionIndex = getInput($endpointPrompts);
 	$endpoint = $endpointPrompts[$selectionIndex];
+	if ($selectionIndex == 1){
+		$timePrompts = array("day", "week", "all");
+		echo "\n\nTop posts from when?\n";
+		$timeSelection = getInput($timePrompts);
+		$params["t"] = $timePrompts[$timeSelection];
+	}
+
 
 	$limit = readline("\nHow many posts do you want? press enter for 25: ");
 
-	gen_epub($subreddit, $endpoint, $limit);
+	if ($limit) $params["limit"]=$limit;
+	else $params["limit"]=25;
+
+	gen_epub($subreddit, $endpoint, $params);
+
 }
 
-function gen_epub($subreddit, $endpoint, $limit, $time=null){
+function savedCollectionPull()
+{
+	
+}
+
+function gen_epub($subreddit, $endpoint, $params){
 
 $grabber = new PostGrabber();
-$maker = new FileGenerator($grabber->getPosts($subreddit, $endpoint, $limit, $time));
+$maker = new FileGenerator($grabber->getPosts($subreddit, $endpoint, $params));
 
 $maker->gen_epub();
 
@@ -53,7 +71,7 @@ function getInput($prompts){
 	}
 
 	$selection = readline("\nEnter your selection: ");
-	return $selection;
+	return $selection-1;
 }
 
  ?>

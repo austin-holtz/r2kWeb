@@ -13,13 +13,13 @@ class PostGrabber
 		
 	}
 
-	function getPosts($subreddit = 'nosleep', $endpoint = 'hot',$limit = null){
+	function getPosts($subreddit = 'nosleep', $endpoint = 'hot',$params){
 
-		if(!strcmp($endpoint, "top")) $endpoint = "sort/$endpoint";
+
 		
 		
 		$api = new RedditAPI();
-		$response = $api->apiCall($subreddit,$endpoint,$limit);
+		$response = $api->apiCall($subreddit,$endpoint,$params);
 		$posts = $response["data"]["children"];
 		// print_r($posts);
 		unset($response);
@@ -38,7 +38,19 @@ class PostGrabber
 			}
 		}
 
-		$title = "/r/".$subreddit." ".$endpoint." ".$limit." ".date("l, F j, Y");
+		// switch($params["t"]){
+		// 	case null:
+		// 		$reqTimePeriod = ;
+
+		// 	case "day":
+		// 		$reqTimePeriod = date("l, F j, Y");
+
+		// 	case "week" = 
+		// }
+		$topFromString = "";
+		if (array_key_exists('t', $params)) $topFromString = " ".$params['t']." ";
+
+		$title = "/r/".$subreddit." ".$endpoint." ".$params["limit"].$topFromString." ".date("l, F j, Y");
 		return new PostCollection($title,$cleanedposts);
 	}
 }

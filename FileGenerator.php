@@ -243,7 +243,7 @@ class FileGenerator
 	*/
 	function gen_epub(){
 
-		$pathToEpub = "Generated Ebooks/$this->directory.epub";
+		$pathToEpub = "Ebooks/$this->directory.epub";
 
 		//epub files are just zip files with a .epub file extention
 

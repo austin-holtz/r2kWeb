@@ -11,9 +11,11 @@ class RedditAPI
 
 	}
 
-	function apiCall($subreddit,$endpoint,$limit){
+	function apiCall($subreddit,$endpoint,$params){
 		$token = $this->getAccessToken();
-		$reqUrl = "https://oauth.reddit.com/r/$subreddit/$endpoint";
+		$params = http_build_query($params);
+		$reqUrl = "https://oauth.reddit.com/r/$subreddit/$endpoint/?$params";
+
 		
 		$ch = curl_init($reqUrl);
 
@@ -21,18 +23,16 @@ class RedditAPI
 
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $httpheader);
 
-		curl_setopt($ch, CURLOPT_HTTPGET, true);
-
 		curl_setopt($ch,CURLOPT_USERAGENT,"post2epub by /u/reddit2kindle");
 
-		if ($limit)
-		{
-			$params = array("limit"=>$limit);
-			$reqUrl.="/?";
-			foreach ($params as $key => $value) {
-				$reqUrl.="$key=$value";
-			}
-		}
+		// if ($limit)
+		// {
+		// 	$params = array("limit"=>$limit);
+		// 	$reqUrl.="/?";
+		// 	foreach ($params as $key => $value) {
+		// 		$reqUrl.="$key=$value";
+		// 	}
+		// }
 
 
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
