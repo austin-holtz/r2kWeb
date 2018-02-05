@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?><ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="en">
+	<head>
+		<meta content="1" name="dtb:uid"/>
+		<meta content="2" name="dtb:depth"/>
+		
+	</head>
+	<docTitle>
+		<text>collectiontitle</text>
+	</docTitle>
+	<navMap>
+	
+		<navPoint class="chapter" id="title" playOrder="1">
+			<navLabel>
+				<text>Title Page</text>
+			</navLabel>
+			<content src="Text/title.xhtml"/>
+		</navPoint>
+
+		<navPoint class="chapter" id="toc" playOrder="2">
+			<navLabel>
+				<text>Table of Contents</text>
+			</navLabel>
+			<content src="Text/toc.xhtml"/>
+		</navPoint>
+		
+		
+		
+postlinks
+		
+		
+	</navMap>
+</ncx>

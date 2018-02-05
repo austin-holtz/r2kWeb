@@ -2,46 +2,69 @@
 /**
 * 
 */
-require("PHP-OAuth2/src/OAuth2/Client.php");
-require("PHP-OAuth2/src/OAuth2/GrantType/IGrantType.php");
-require("PHP-OAuth2/src/OAuth2/GrantType/ClientCredentials.php");
+require("RedditAPI.php");
+
 class PostGrabber
 {
 	
+	
 	function __construct()
 	{
-
+		
 	}
 
+	function getPosts($subreddit = 'nosleep', $endpoint = 'hot',$params){
 
-	function setToken(){
 
-		$accessTokenUrl = 'https://ssl.reddit.com/api/v1/access_token';
-		$clientId = 'bC5wDWg_-w4v7g';
-		$clientSecret = 'KQIAWonVBlYU_O-5zF4YaeqCg_I';
+		
+		
+		$api = new RedditAPI();
+		$response = $api->apiCall($subreddit,$endpoint,$params);
+		$posts = $response["data"]["children"];
+		// print_r($posts);
+		unset($response);
+		unset($api);
 
-		$client = new OAuth2\Client($clientId,$clientSecret,OAuth2\Client::AUTH_TYPE_AUTHORIZATION_BASIC);
-		$client->setCurlOption(CURLOPT_USERAGENT,"post2kindle by /u/reddit2kindle");
-		$params = array("user-pass"=>"bC5wDWg_-w4v7g:KQIAWonVBlYU_O-5zF4YaeqCg_I");
-		$response = $client->getAccessToken($accessTokenUrl, "client_credentials",$params);
-		$accessTokenResult = $response["result"];
-		$client->setAccessToken($accessTokenResult["access_token"]);
-		$client->setAccessTokenType(OAuth2\Client::ACCESS_TOKEN_BEARER);
+		$cleanedposts = array();
+		foreach ($posts as $value){
+			$temparray = $value["data"];
+			if (!$temparray["stickied"]&&strcmp($temparray["link_flair_text"],"Series")){
+				$searches = array("&lt;","&gt;","&amp;");
+				$replace = array("<",">","&");
+				$cleanedbody = str_replace($searches, $replace, $temparray["selftext_html"]);
+				$post = array("title"=>$temparray["title"],"body"=>$cleanedbody,"author"=>$temparray["author"]
+					);
+				array_push($cleanedposts, $post);
+			}
+		}
 
-		return $client;
+		// switch($params["t"]){
+		// 	case null:
+		// 		$reqTimePeriod = ;
+
+		// 	case "day":
+		// 		$reqTimePeriod = date("l, F j, Y");
+
+		// 	case "week" = 
+		// }
+		$topFromString = "";
+		if (array_key_exists('t', $params)) $topFromString = " ".$params['t']." ";
+
+		$title = "/r/".$subreddit." ".$endpoint." ".$params["limit"].$topFromString." ".date("l, F j, Y");
+		return new PostCollection($title,$cleanedposts);
 	}
+}
 
-	function getPosts(){
-		
-		$client = $this->setToken();
-		
-
-		$reqparams = array("limit"=>"1");
-
-		$response = $client->fetch("https://oauth.reddit.com/r/nosleep/hot",$reqparams);
-
-		echo('<strong>Response for fetch me.json:</strong><pre>');
-		print_r($response);
-		echo('</pre>');
+/**
+* 
+*/
+class PostCollection
+{	
+	public $title;
+	public $posts;
+	function __construct($title,$posts)
+	{
+		$this->title = $title;
+		$this->posts = $posts;
 	}
 }
