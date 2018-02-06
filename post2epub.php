@@ -11,14 +11,17 @@ mainMenu();
 
 function mainMenu(){
 	$options = array("Create a custom collection pull",
-					 "Load a saved collection pull"
+					 "Load a saved collection pull",
 					);
 
 	$selection = getInput($options);
 
 	switch($selection){
 		case 0:
-			customCollection();
+			customCollectionPull();
+
+		case 1:
+			savedCollectionPull();
 	}
 }
 
@@ -38,26 +41,48 @@ function customCollectionPull(){
 	}
 
 
-	$limit = readline("\nHow many posts do you want? press enter for 25: ");
+	$limit = readline("\nHow many posts do you want? Press enter for 25: ");
 
 	if ($limit) $params["limit"]=$limit;
 	else $params["limit"]=25;
 
-	gen_epub($subreddit, $endpoint, $params);
+	genEpub($subreddit, $endpoint, $params);
 
 }
 
 function savedCollectionPull()
 {
-	
+
+	$lines = file("settings/savedpulls.txt");
+	$lines = array_map("trim",$lines);
+
+	$selection = getInput($lines);
+
+	pullFromLine($lines[$selection]);
 }
 
-function gen_epub($subreddit, $endpoint, $params){
+function pullFromLine($line)
+{
+		$output = array();
+		$line = trim($line);
+		$lineArray = explode(" ", $line);
+		$subreddit = $lineArray[0];
+		$endpoint = $lineArray[1];
+		$params = array("limit"=>$lineArray[2]);
+		if (array_key_exists(2, $lineArray))
+		{
+			$params["t"]=$lineArray[3];
+		}
+
+		genEpub($subreddit,$endpoint, $params);
+	}
+
+function genEpub($subreddit, $endpoint, $params){
 
 $grabber = new PostGrabber();
 $maker = new FileGenerator($grabber->getPosts($subreddit, $endpoint, $params));
 
-$maker->gen_epub();
+$maker->genEpub();
 
 }
 
